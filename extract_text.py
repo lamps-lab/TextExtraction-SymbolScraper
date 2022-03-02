@@ -9,32 +9,16 @@ import re
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", "--xml", required = True, help = "path to the xml file")
-    parser.add_argument("-i", "new_xml", required = True, help = "path to the corrected xml file")
     parser.add_argument("--outputDirectory", help = "path to save the result of each page")
     parser.add_argument("--textName", help = "name of output .txt file ")
     return parser
 
-# TODO
-def remove_invalidCharacter():
-    parser = get_args()
-    args = parser.parse_args()
-    xml_path = args.xml
-    file = open(xml_path)
-    text = file.read()
-    file.close()
-    text = re.sub("(&#)[0-9]?;?", "", text)
-
-    # get the relative path of the xml directory and join with "_corrected.xml"
-    file2 = open(os.path.join(xml_path[:4], "_corrected.xml", 'w'))
-    file2.write(text)
-    file2.close()
 
 def getRoot():
     try:
 
         parser = get_args()
         args = parser.parse_args()
-        #TODO: open the corrected xml 
         xml_path = args.xml
         tree = ET.parse(xml_path)
         root = tree.getroot()
@@ -44,48 +28,29 @@ def getRoot():
     
 
 
-# def getText(root):
-#     result = []
-#     try:
-
-#         for tags in root[0]:
-#             #word = []
-#             for child in tags:
-#                 word = []
-#                 numElement = len(list(child))
-#                 for i in range(numElement):
-#                 # char = tags[0][i].text
-#                     char = child[i].text
-#                     word.append(char)
-#                 words = "".join(word)
-#                 result.append(words)
-#             #result.append(" ")
-#     except Exception as error:
-#         print(error)
-#     return result
-
 def getText():
     root = getRoot()
     result = []
     try:
-
+        # loop through each page
         for page in root:
             page_result = []
+            # loop through each line in a page
             for tags in page:
 
                 line = []
+                # loop through word in a line
                 for child in tags:
                     word = []
                     numElement = len(list(child))
+                    # each character in a word
                     for i in range(numElement):
-                    # char = tags[0][i].text
                         char = child[i].text
                         word.append(char)
                     words = "".join(word)
-                    # page_result.append(words)
-                    line.append(words)    # added code
-                sentence = " ".join(line)  # added code
-                page_result.append(sentence) # added code
+                    line.append(words)   
+                sentence = " ".join(line) 
+                page_result.append(sentence)
             result.append(page_result)
     except Exception as error:
         print(error)
